@@ -1,7 +1,9 @@
 package com.project.account.controller;
 
 import com.project.account.domain.Account;
+import com.project.account.repository.AccountRepository;
 import com.project.account.service.AccountService;
+import com.project.account.service.RedisTestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
     private final AccountService accountService;
+    private final RedisTestService redisTestService;
+
+    @GetMapping("/get-lock")
+    public String getLock() {
+        return redisTestService.getLock();
+    }
 
     @GetMapping("/create-account")
     public String createAccount() {
