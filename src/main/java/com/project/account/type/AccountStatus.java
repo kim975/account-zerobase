@@ -1,4 +1,4 @@
-package com.project.account.domain;
+package com.project.account.type;
 
 public enum AccountStatus {
 
