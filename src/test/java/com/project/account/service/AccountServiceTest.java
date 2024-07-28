@@ -16,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -271,6 +273,59 @@ class AccountServiceTest {
 
         //then
         assertEquals(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED, exception.getErrorCode());
+    }
+
+    @Test
+    void successGetAccountsByUserId() {
+        //given
+        AccountUser user = AccountUser.builder()
+                .id(12L)
+                .build();
+
+        List<Account> accountDtoList = Arrays.asList(
+                Account.builder()
+                        .accountUser(user)
+                        .accountNumber("1234567890")
+                        .balance(1000L).build(),
+                Account.builder()
+                        .accountUser(user)
+                        .accountNumber("1234567891")
+                        .balance(2000L).build(),
+                Account.builder()
+                        .accountUser(user)
+                        .accountNumber("1234567892")
+                        .balance(3000L).build());
+
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.of(user));
+        given(accountRepository.findByAccountUser(any()))
+                .willReturn(accountDtoList);
+
+        //when
+        List<AccountDto> accountsDtoList = accountService.getAccountsByUserId(anyLong());
+
+        //then
+        assertEquals(3, accountsDtoList.size());
+        assertEquals("1234567890", accountsDtoList.get(0).getAccountNumber());
+        assertEquals("1234567891", accountsDtoList.get(1).getAccountNumber());
+        assertEquals("1234567892", accountsDtoList.get(2).getAccountNumber());
+        assertEquals(1000L, accountsDtoList.get(0).getBalance());
+        assertEquals(2000L, accountsDtoList.get(1).getBalance());
+        assertEquals(3000L, accountsDtoList.get(2).getBalance());
+    }
+
+    @Test
+    void failedToGetAccounts(){
+        //given
+        given(accountUserRepository.findById(anyLong()))
+                .willReturn(Optional.empty());
+
+        //when
+        AccountException exception = assertThrows(AccountException.class,
+                () -> accountService.getAccountsByUserId(1L));
+
+        //then
+        assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
 
 }
