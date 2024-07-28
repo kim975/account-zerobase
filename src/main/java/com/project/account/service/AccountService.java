@@ -83,7 +83,9 @@ public class AccountService {
         account.setAccountStatus(UNREGISTERED);
         account.setUnregisteredAt(LocalDateTime.now());
 
-        return AccountDto.fromEntity(accountRepository.save(account));
+        accountRepository.save(account);
+
+        return AccountDto.fromEntity(account);
     }
 
     private void validateDeleteAccount(AccountUser accountUser, Account account) {
