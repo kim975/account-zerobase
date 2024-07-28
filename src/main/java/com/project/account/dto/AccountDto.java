@@ -1,7 +1,6 @@
 package com.project.account.dto;
 
 import com.project.account.domain.Account;
-import com.project.account.domain.AccountUser;
 import lombok.*;
 
 import java.time.LocalDateTime;
