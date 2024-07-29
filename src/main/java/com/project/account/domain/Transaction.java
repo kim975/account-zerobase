@@ -1,13 +1,16 @@
 package com.project.account.domain;
 
-import com.project.account.type.AccountStatus;
 import com.project.account.type.TransactionResultType;
 import com.project.account.type.TransactionType;
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
@@ -15,14 +18,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Transaction {
-
-    @Id
-    @GeneratedValue
-    private Long id;
+public class Transaction extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
@@ -41,9 +39,4 @@ public class Transaction {
 
     private LocalDateTime transactedAt;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 }
