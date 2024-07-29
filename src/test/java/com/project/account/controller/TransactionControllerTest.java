@@ -1,6 +1,7 @@
 package com.project.account.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.account.dto.CancelBalance;
 import com.project.account.dto.TransactionDto;
 import com.project.account.dto.UseBalance;
 import com.project.account.service.TransactionService;
@@ -52,6 +53,32 @@ class TransactionControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(
                                 new UseBalance.Request(1L, "1231231231", 3000L)
+                        )))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accountNumber").value("1234567891"))
+                .andExpect(jsonPath("$.transactionResult").value("S"))
+                .andExpect(jsonPath("$.transactionId").value("transactionId"))
+                .andExpect(jsonPath("$.amount").value(123456L));
+    }
+
+    @Test
+    void successCancelBalance() throws Exception {
+        //given
+        given(transactionService.cancelBalance(anyString(), anyString(), anyLong()))
+                .willReturn(TransactionDto.builder()
+                        .accountNumber("1234567891")
+                        .transactedAt(LocalDateTime.now())
+                        .amount(123456L)
+                        .transactionId("transactionId")
+                        .transactionResultType(S)
+                        .build());
+        //when
+        //then
+        mockMvc.perform(post("/transaction/cancel")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new CancelBalance.Request("transactionId", "1231231231", 3000L)
                         )))
                 .andDo(print())
                 .andExpect(status().isOk())
